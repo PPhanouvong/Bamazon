@@ -52,7 +52,7 @@ var viewInven = function (cb) {
     connection.query('SELECT * FROM products', function (err, res) {
         //CREATES THE NEW CLI TABLE 
         var table = new Table({
-            head: ['ID', 'Product Name', 'Department', 'Price', 'Stock Quantity']
+            head: ['ID', 'Product Name', 'Department', 'Price', 'Quantity']
         });
         console.log("HERE ARE ALL THE ITEMS AVAILABLE FOR SALE: ");
         console.log("===========================================");
@@ -68,7 +68,7 @@ var viewInven = function (cb) {
 
 //DISPLAYS THE LOW INVENTORY WHEN IT REACHES LESS THAN 5 
 function viewLowInven(cb) {
-    connection.query('SELECT * FROM products WHERE stock_quantity < 5',
+    connection.query('SELECT * FROM products WHERE quantity < 5',
         function (err, res) {
             if (err) throw err;
             //IF THERE ARE NO ITEMS IN QUANTITY ALERT THE USER AND RE-RUN.
@@ -78,7 +78,7 @@ function viewLowInven(cb) {
             } else {
                 //CREATES THE CLI TABLE 
                 var table = new Table({
-                    head: ['ID', 'Product Name', 'Department', 'Price', 'Stock Quantity']
+                    head: ['ID', 'Product Name', 'Department', 'Price', 'Quantity']
                 });
                 for (var i = 0; i < res.length; i++) {
                     table.push([res[i].id, res[i].product_name, res[i].department_name, res[i].price, res[i].quantity]);
@@ -133,7 +133,7 @@ function addToInven2(itemNames) {
         product_name: item
     }, function (err, res) {
         if (err) throw err;
-        itemStock = res[0].stock_quantity;
+        itemStock = res[0].quantity;
         itemStock = parseInt(itemStock)
     });
     //ASK USER HOW MANY ITEMS TO ADD 
@@ -153,7 +153,7 @@ function addToInven2(itemNames) {
     }]).then(function (user) {
         var amount = user.amount
         amount = parseInt(amount);
-        //UPDATES DATABASE PRODUCTS TO REFLECT THE NEW STOCK QUANTITY OF ITEMS.
+        //UPDATES DATABASE PRODUCTS TO REFLECT THE NEW QUANTITY OF ITEMS.
         connection.query('UPDATE products SET ? WHERE ?', [{
             quantity: itemStock += amount
         }, {
@@ -194,7 +194,7 @@ function addNewProd() {
     }, {
         name: 'stock',
         type: 'text',
-        message: 'Plese enter the Stock Quantity for this item to be entered into current Inventory',
+        message: 'Please enter the Quantity for this item to be entered into current Inventory',
         validate: function (value) {
             if (isNaN(value) === false) {
                 return true;
